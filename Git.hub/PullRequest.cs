@@ -123,5 +123,23 @@ namespace Git.hub
             });
             return _client.Patch(request).StatusCode == System.Net.HttpStatusCode.OK;
         }
+
+        public bool Merge(string branch)
+        {
+            var request = new RestRequest("repos/{user}/{repo}/pulls/{pull}/merge");
+            request.AddUrlSegment("user", Repository.Owner.Login);
+            request.AddUrlSegment("repo", Repository.Name);
+            request.AddUrlSegment("pull", Number.ToString());
+
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new
+            {
+                merge_method = "merge",
+                commit_title = $"#{Number} Merge of {branch}",
+                commit_message = $"#{Number} Merge of {branch}"
+            });
+            var response = _client.Put(request);
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
+        }
     }
 }
