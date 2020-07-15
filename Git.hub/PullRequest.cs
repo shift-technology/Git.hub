@@ -135,8 +135,8 @@ namespace Git.hub
             request.AddJsonBody(new
             {
                 merge_method = "merge",
-                commit_title = $"#{Number} Merge of {branch}",
-                commit_message = $"#{Number} Merge of {branch}"
+                commit_title = $"Merge of {branch} (#{Number})",
+                commit_message = $"Merge of {branch} (#{Number})"
             });
             var response = _client.Put(request);
             return response.StatusCode == System.Net.HttpStatusCode.OK;
