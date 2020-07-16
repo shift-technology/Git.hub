@@ -67,7 +67,13 @@ namespace Git.hub
             request.AddUrlSegment("user", Owner.Login);
             request.AddUrlSegment("repo", Name);
 
-            Repository forked = _client.Post<Repository>(request).Data;
+            var response = _client.Post<Repository>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+            Repository forked = response.Data;
             forked._client = _client;
             return forked;
         }
@@ -96,12 +102,14 @@ namespace Git.hub
             request.AddUrlSegment("user", Owner.Login);
             request.AddUrlSegment("repo", Name);
 
-            var repo = _client.Get<Repository>(request).Data;
+            var response = _client.Get<Repository>(request);
 
-            if (repo == null)
+            if (!response.IsSuccessful)
             {
-                return null;
+                throw new Exception(response.Content);
             }
+
+            var repo = response.Data;
 
             return repo.DefaultBranch;
         }
@@ -136,9 +144,14 @@ namespace Git.hub
             request.AddUrlSegment("repo", Name);
             request.AddUrlSegment("pull", id.ToString());
 
-            var pullrequest = _client.Get<PullRequest>(request).Data;
-            if (pullrequest == null)
-                return null;
+            var response = _client.Get<PullRequest>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+
+            var pullrequest = response.Data;
 
             pullrequest._client = _client;
             pullrequest.Repository = this;
@@ -168,9 +181,14 @@ namespace Git.hub
                 x__custom__base = baseBranch
             });
 
-            var pullrequest = _client.Post<PullRequest>(request).Data;
-            if (pullrequest == null)
-                return null;
+            var response = _client.Post<PullRequest>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+
+            var pullrequest = response.Data;
 
             pullrequest._client = _client;
             pullrequest.Repository = this;
@@ -184,9 +202,14 @@ namespace Git.hub
             request.AddUrlSegment("repo", Name);
             request.AddUrlSegment("ref", refName);
 
-            var ghRef = _client.Get<GitHubReference>(request).Data;
-            if (ghRef == null)
-                return null;
+            var response = _client.Get<GitHubReference>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+
+            var ghRef = response.Data;
 
             ghRef._client = _client;
             ghRef.Repository = this;
@@ -212,9 +235,14 @@ namespace Git.hub
                 body = body
             });
 
-            var issue = _client.Post<Issue>(request).Data;
-            if (issue == null)
-                return null;
+            var response = _client.Post<Issue>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+
+            var issue = response.Data;
 
             issue._client = _client;
             issue.Repository = this;
