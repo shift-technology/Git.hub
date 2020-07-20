@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Git.hub.Errors;
 using Git.hub.util;
+using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Serialization.Json;
 
 namespace Git.hub
 {
@@ -71,7 +75,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
             Repository forked = response.Data;
             forked._client = _client;
@@ -106,7 +110,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
 
             var repo = response.Data;
@@ -148,7 +152,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
 
             var pullrequest = response.Data;
@@ -185,7 +189,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
 
             var pullrequest = response.Data;
@@ -206,7 +210,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
 
             var ghRef = response.Data;
@@ -239,7 +243,7 @@ namespace Git.hub
 
             if (!response.IsSuccessful)
             {
-                throw new Exception(response.Content);
+                ManageError(response);
             }
 
             var issue = response.Data;
@@ -262,6 +266,20 @@ namespace Git.hub
         public override string ToString()
         {
             return Owner.Login + "/" + Name;
+        }
+
+        public void ManageError(IRestResponse response)
+        {
+            var error = JsonConvert.DeserializeObject<ApiError>(response.Content);
+
+            var errorContent = string.Join("\r\n", error?.errors?.Select(e => e.message) ?? new string[0]);
+
+            if (string.IsNullOrEmpty(errorContent))
+            {
+                errorContent = error.message;
+            }
+
+            throw new Exception(errorContent);
         }
     }
 }
