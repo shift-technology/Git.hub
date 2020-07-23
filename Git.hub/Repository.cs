@@ -127,6 +127,7 @@ namespace Git.hub
             var request = new RestRequest("/repos/{user}/{repo}/pulls");
             request.AddUrlSegment("user", Owner.Login);
             request.AddUrlSegment("repo", Name);
+            request.AddHeader("accept", "application/vnd.github.v3+json");
 
             var list = _client.GetList<PullRequest>(request);
             if (list == null)
