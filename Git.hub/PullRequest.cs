@@ -28,6 +28,21 @@ namespace Git.hub
         public int Number { get; private set; }
 
         /// <summary>
+        /// State of the pull request
+        /// </summary>
+        public string State { get; private set; }
+
+        /// <summary>
+        /// Mergeability of the pull request
+        /// </summary>
+        public bool? Mergeable { get; private set; }
+
+        /// <summary>
+        /// Mergeability of the pull request
+        /// </summary>
+        public string Mergeable_state { get; private set; }
+
+        /// <summary>
         /// Title, i.e. what is shown in the list of pull requests
         /// </summary>
         public string Title { get; private set; }
