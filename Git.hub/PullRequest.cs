@@ -28,6 +28,21 @@ namespace Git.hub
         public int Number { get; private set; }
 
         /// <summary>
+        /// State of the pull request
+        /// </summary>
+        public string State { get; private set; }
+
+        /// <summary>
+        /// Mergeability of the pull request
+        /// </summary>
+        public bool? Mergeable { get; private set; }
+
+        /// <summary>
+        /// Mergeability of the pull request
+        /// </summary>
+        public string Mergeable_state { get; private set; }
+
+        /// <summary>
         /// Title, i.e. what is shown in the list of pull requests
         /// </summary>
         public string Title { get; private set; }
@@ -122,6 +137,24 @@ namespace Git.hub
                 state = state
             });
             return _client.Patch(request).StatusCode == System.Net.HttpStatusCode.OK;
+        }
+
+        public bool Merge(string branch)
+        {
+            var request = new RestRequest("repos/{user}/{repo}/pulls/{pull}/merge");
+            request.AddUrlSegment("user", Repository.Owner.Login);
+            request.AddUrlSegment("repo", Repository.Name);
+            request.AddUrlSegment("pull", Number.ToString());
+
+            request.RequestFormat = DataFormat.Json;
+            request.AddJsonBody(new
+            {
+                merge_method = "merge",
+                commit_title = $"Merge of {branch} (#{Number})",
+                commit_message = $"Merge of {branch} (#{Number})"
+            });
+            var response = _client.Put(request);
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
     }
 }
